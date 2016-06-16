@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <title>Air Quality Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="utf-8">
+    <link rel="stylesheet" href="boge\leaflet.label.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+    <script src="/plugins/leaflet-heatmap.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="/build/heatmap.js"></script>
+    <script src="boge\leaflet-pip.min.js"></script>
+    <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+     <script src="https://dl.dropboxusercontent.com/u/21583725/jsfiddle/js/libs/leaflet-heatmap.unmin.js" ></script>
+  <style>
+    div.static {
+      position: static;
+      border: 1px solid #73AD21;
+    }
+    body {
+      height: 100%;
+      width: 100%;
+      float: left;
+    }
+    html, body, #map {
+      height: 100%
+    }
+    .info {
+      padding: 6px 8px;
+      font: 14px/16px Candara,Arial, Helvetica, sans-serif;
+      background: white;
+      background: rgba(87,87,86,0.8);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+      color:rgba(255,255,255,0.9);
+    }
+    .info h4 {
+      margin: 0 0 50px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    window.onload = function() {
+        var map = L.map('map', {
+            inertia: true,
+            fadeanimation: true
+        });
+        map.setView([39.935409, 32.837975], 11);
+
+        var myStyle = {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 0.85
+        };
+
+        var altlik = new L.StamenTileLayer("toner");
+        altlik.addTo(map);
+        // station data
+        var ankara_sincan = L.point(32.5850, 39.9719);
+        var ankara_dikmen = L.point(32.8406, 39.8964)
+        var testData = {
+            max: 8,
+            data: [{lat: ankara_sincan.x, lng: ankara_sincan.y, count: 3}, {
+                lat: ankara_dikmen.x,
+                lng: ankara_dikmen.y,
+                count: 2
+            }]
+        };
+        var cfg = {
+            // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+            "radius": 2,
+            "maxOpacity": .8,
+            // scales the radius based on map zoom
+            "scaleRadius": true,
+            // if set to false the heatmap uses the global maximum for colorization
+            // if activated: uses the data maximum within the current map boundaries
+            //   (there will always be a red spot with useLocalExtremas true)
+            "useLocalExtrema": true,
+            // which field name in your data represents the latitude - default "lat"
+            latField: 'lat',
+            // which field name in your data represents the longitude - default "lng"
+            lngField: 'lng',
+            // which field name in your data represents the data value - default "value"
+            valueField: 'count'
+        };
+
+        var heatmapLayer = new HeatMapOverlay(cfg);
+
+      //  var map = new L.Map('map', {
+        //    center: new L.LatLng([39.935409, 32.837975]),
+          //  zoom: 11,
+            //layers: [altlik, heatmapLayer]
+        //});
+
+        heatmapLayer.setData(testData);
+        heatmapLayer.addTo(map);
+
+        // make accessible for debugging
+        layer = heatmapLayer;
+    }
+
+</script>
+</body>
+</html>
